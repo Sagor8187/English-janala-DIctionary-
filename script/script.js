@@ -4,12 +4,26 @@ let loadbtn = () => {
     .then((json) => showbtn(json.data));
 };
 
+let deactive = ()=>{
+  let allbtn= document.querySelectorAll(".lesson-btn")
+  allbtn.forEach(btn => btn.classList.remove("active"))
+}
+
 let loaddata = (id) => {
+
+
   let url = `https://openapi.programming-hero.com/api/level/${id}`;
+
   fetch(url)
     .then((res) => res.json())
-    .then((json) => showdata(json.data));
-};
+    .then((json) => {
+      deactive()
+    let activebtn = document.getElementById(`lesson-btn${id}`)
+    activebtn.classList.add("active")
+      showdata(json.data);
+    });
+}
+
 
 let showdata = (data) => {
   let wordcontainer = document.getElementById("word");
@@ -68,7 +82,7 @@ let showbtn = (data) => {
   data.forEach((btn) => {
     let div = document.createElement("div");
     div.innerHTML = `
-        <button onclick = "loaddata(${btn.level_no})" class="btn btn-outline btn-primary"><i class="fa-solid fa-book-open"></i>Lesson -${btn.level_no}</button>
+        <button id="lesson-btn${btn.level_no}" onclick = "loaddata(${btn.level_no})" class="btn btn-outline btn-primary lesson-btn"><i class="fa-solid fa-book-open"></i>Lesson -${btn.level_no}</button>
         `;
     section.appendChild(div);
   });
