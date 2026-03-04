@@ -1,19 +1,26 @@
-let createlement = (arr)=>{
-  let htmlelemetn  = arr.map(elm => `<span class = "btn">${elm}</span>`)
+let createlement = (arr) => {
+  let htmlelemetn = arr.map((elm) => `<span class = "btn">${elm}</span>`);
 
-  return htmlelemetn.join(" ")
+  return htmlelemetn.join(" ");
+};
+
+// this is speak word
+
+function pronounceWord(word) {
+  const utterance = new SpeechSynthesisUtterance(word);
+  utterance.lang = "en-EN"; // English
+  window.speechSynthesis.speak(utterance);
 }
 
-let spinars = (status)=>{
-  if(status == true){
-    document.getElementById("spinar").classList.remove("hidden")
-    document.getElementById("word").classList.add("hidden")
-
-  }else{
-    document.getElementById("spinar").classList.add("hidden")
-    document.getElementById("word").classList.remove("hidden")
+let spinars = (status) => {
+  if (status == true) {
+    document.getElementById("spinar").classList.remove("hidden");
+    document.getElementById("word").classList.add("hidden");
+  } else {
+    document.getElementById("spinar").classList.add("hidden");
+    document.getElementById("word").classList.remove("hidden");
   }
-}
+};
 let loadbtn = () => {
   fetch("https://openapi.programming-hero.com/api/levels/all")
     .then((res) => res.json())
@@ -26,7 +33,7 @@ let deactive = () => {
 };
 
 let loaddata = (id) => {
-  spinars(true)
+  spinars(true);
   let url = `https://openapi.programming-hero.com/api/level/${id}`;
 
   fetch(url)
@@ -57,9 +64,8 @@ let showdata = (data) => {
         <h2 class="font-bold text-4xl">নেক্সট Lesson এ যান</h2>
       </div>
     `;
-    spinars(false)
-    return
-    
+    spinars(false);
+    return;
   }
   data.forEach((item) => {
     let div = document.createElement("div");
@@ -80,7 +86,7 @@ let showdata = (data) => {
                     <i class="fa-solid fa-circle-info"></i>
                 </button>
 
-                <button class="btn bg-[#1A91FF10] hover:bg-[#1A91FF80]">
+                <button onclick="pronounceWord('${item.word}')" class="btn bg-[#1A91FF10] hover:bg-[#1A91FF80]">
                     <i class="fa-solid fa-volume-high"></i>
                 </button>
 
@@ -89,9 +95,8 @@ let showdata = (data) => {
         </div>
         `;
     wordcontainer.append(div);
-
   });
-  spinars(false)
+  spinars(false);
 };
 
 let showbtn = (data) => {
@@ -115,9 +120,8 @@ let loadetails = async (id) => {
 };
 
 let showmodalinfo = (word) => {
-
- let showModals= document.getElementById("shwodata")
- showModals.innerHTML = `
+  let showModals = document.getElementById("shwodata");
+  showModals.innerHTML = `
           <div>
         <h2 class="text-2xl font-bold">
           ${word.word} 
@@ -145,3 +149,21 @@ let showmodalinfo = (word) => {
   document.getElementById("my_modal_5").showModal();
 };
 loadbtn();
+
+document.getElementById("input-btn").addEventListener("click",()=>{
+  deactive()
+  let data = document.getElementById("input-value")
+  let datafilter = data.value.trim().toLowerCase()
+  spinars(true);
+  fetch("https://openapi.programming-hero.com/api/words/all")
+    .then(res => res.json())
+    .then(data => {
+      let allword = data.data;
+      let filterword = allword.filter(word=> word.word.toLowerCase().includes(datafilter))
+      spinars(false);
+      showdata(filterword)
+    })
+  
+})
+
+ 
